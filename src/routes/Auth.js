@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { authService } from "../fbase";
+import { authService, fireBaseInstance } from "../fbase";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,8 +38,18 @@ const Auth = () => {
     setNewAccount((prev) => !prev);
   };
 
-  const onSocialClick = (event) => {
-    console.log(event.target.name);
+  const onSocialClick = async (event) => {
+    const {
+      target: { name },
+    } = event;
+    let provider;
+    if (name === "google") {
+      provider = new fireBaseInstance.auth.GoogleAuthProvider();
+    } else if (name === "github") {
+      provider = new fireBaseInstance.auth.GithubAuthProvider();
+    }
+    const data = await authService.signInWithPopup(provider);
+    console.log(data);
   };
 
   return (
